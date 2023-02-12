@@ -1,22 +1,22 @@
 from rest_framework import serializers
-from users.models import CustomUser
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate
 
 User = get_user_model()
 
-class LoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['username', 'password']
+class SignInSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
 
-        def validate(self, data):
-            user = authenticate(**data)
-            if not (user and user.is_active):
-                raise serializers.ValidationError('Incorrect Credentials')
-            return user
+    def validate(self, data):
+        user = authenticate(**data)
+        if not user:
+            raise serializers.ValidationError('Incorrect credentials')
+        if not user.is_active:
+            raise serializers.ValidationError('User inactive')
+        return user
 
 #This class should be in other app
 class GroupSerializer(serializers.ModelSerializer):
@@ -31,7 +31,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'group')
+        fields = ('email', 'password', 'group')
 
     def create(self, validated_data, group_name):
         group = Group.objects.get(name=group_name)

@@ -16,13 +16,17 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_l$-ykev4%^@%5b$j)ltfguw+y56050=xn-0%5#$+p8@0ljf&q'
+SECRET_KEY = env('SECRET_KEY')
 
+JWT_SECRET_KEY = env('JWT_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -41,6 +45,15 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
 ]
+
+REST_FRAMEWORK = {
+    """'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),"""
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -75,10 +88,6 @@ WSGI_APPLICATION = 'sols.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-# Initialise environment variables
-env = environ.Env()
-environ.Env.read_env()
 
 DATABASES = {
     'default': {
