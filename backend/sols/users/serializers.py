@@ -14,8 +14,6 @@ class SignInSerializer(serializers.Serializer):
         user = authenticate(**data)
         if not user:
             raise serializers.ValidationError('Incorrect credentials')
-        if not user.is_active:
-            raise serializers.ValidationError('User inactive')
         return user
 
 #This class should be in other app
