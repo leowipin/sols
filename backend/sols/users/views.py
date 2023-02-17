@@ -7,8 +7,11 @@ import jwt
 from sols import settings
 import datetime
 from datetime import timedelta
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 JWT_SECRET_KEY = settings.JWT_SECRET_KEY
+DEFAULT_FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
 
 class SignInView(APIView):
 
@@ -28,7 +31,6 @@ class SignInView(APIView):
             "token": token.decode("utf-8")
         }, status=status.HTTP_200_OK)
 
-#This class should be in other app
 class GroupView(APIView):
     def post(self, request):
         serializer = GroupSerializer(data=request.data)
@@ -43,7 +45,22 @@ class SignUpView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = SignUpSerializer(data=request.data, context={'group_name': request.data.get('group')})
         if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'Sign up succesfully'}, status=status.HTTP_200_OK)
+            user = serializer.save()
+
+            context = {'user': user}
+            html_content = render_to_string('signupEmail.html', context)
+            subject = 'Welcome to My Site!'
+            from_email = DEFAULT_FROM_EMAIL
+            to = [user.email]
+            email = EmailMessage(subject, html_content, from_email, to)
+            email.content_subtype = 'html'
+
+            try:
+                email.send()
+            except Exception as e:
+                print(e)
+                return Response({'message': 'Error sending email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            return Response({'message': 'Sign up successfully'}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

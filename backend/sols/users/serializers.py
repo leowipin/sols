@@ -16,7 +16,6 @@ class SignInSerializer(serializers.Serializer):
             raise serializers.ValidationError('Incorrect credentials')
         return user
 
-#This class should be in other app
 class GroupSerializer(serializers.ModelSerializer):
     permissions = serializers.SlugRelatedField(many=True, queryset=Permission.objects.all(), slug_field='codename', write_only=True)
     
@@ -26,10 +25,12 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class SignUpSerializer(serializers.ModelSerializer):
     group = GroupSerializer(many=True, read_only=True)
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
     
     class Meta:
         model = User
-        fields = ('email', 'password', 'group')
+        fields = ('email', 'password', 'group', 'first_name', 'last_name')
 
     def create(self, validated_data, group_name):
         group = Group.objects.get(name=group_name)
