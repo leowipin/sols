@@ -26,11 +26,8 @@ export class SigninComponent {
           this.router.navigate(['/sols']);
         },
         error: (error) => {
-          if ('email' in error.error) {
-            this.errorMessage = error.error.email;
-          } else {
-            this.errorMessage = error.error.non_field_errors;
-          }
+          let keyError: string = Object.keys(error.error)[0]
+          this.errorMessage = error.error[keyError]
         },
       });
     }

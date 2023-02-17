@@ -14,7 +14,6 @@ JWT_SECRET_KEY = settings.JWT_SECRET_KEY
 DEFAULT_FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
 
 class SignInView(APIView):
-
     def post(self, request, *args, **kwargs):
         serializer = SignInSerializer(data = request.data)
         serializer.is_valid(raise_exception=True)
@@ -45,18 +44,17 @@ class SignUpView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = SignUpSerializer(data=request.data, context={'group_name': request.data.get('group')})
         if serializer.is_valid():
-            user = serializer.save()
-
-            context = {'user': user}
+            context = {'user': serializer.validated_data}
             html_content = render_to_string('signupEmail.html', context)
             subject = 'Welcome to My Site!'
             from_email = DEFAULT_FROM_EMAIL
-            to = [user.email]
+            to = [serializer.validated_data['email']]
             email = EmailMessage(subject, html_content, from_email, to)
             email.content_subtype = 'html'
 
             try:
                 email.send()
+                serializer.save()
             except Exception as e:
                 print(e)
                 return Response({'message': 'Error sending email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

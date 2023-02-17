@@ -17,7 +17,7 @@ export class SignupComponent {
   group: string = 'client';
   matchErrorPassword = '';
   errorMessage: string = '';
-  succesfulMessage: string = '';
+  message: string = '';
   emptyFirstName: string = '';
   emptyLastName: string = '';
   emptyEmail: string = '';
@@ -34,15 +34,15 @@ export class SignupComponent {
     this.emptyPassword = '';
     this.emptyConfirmPassword = '';
     this.matchErrorPassword = '';
+    this.message = '';
     if(this.firstName && this.lastName && this.email && this.password && this.passwordsMatch){
       this.authService.signUp(this.firstName, this.lastName, this.email, this.password, this.group).subscribe({
         next: (response) => {
-          this.succesfulMessage = response.message;
+          this.message = response.message
         },
         error: (error) => {
-          if ('email' in error.error) {
-            this.errorMessage = error.error.email;
-          } 
+          let keyError: string = Object.keys(error.error)[0]
+          this.errorMessage = error.error[keyError]
         },});
     }
     if(this.firstName == ''){
