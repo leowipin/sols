@@ -11,10 +11,15 @@ export class SigninComponent {
   email: string = '';
   password: string = '';
   errorMessage: string = '';
+  emptyEmail: string = '';
+  emptyPassword: string = '';
 
   constructor(private router: Router, private authService: AuthService) {}
 
   onSubmit() {
+    this.emptyEmail = '';
+    this.emptyPassword = '';
+    this.errorMessage = '';
     if (this.email && this.password) {
       this.authService.signIn(this.email, this.password).subscribe({
         next: (response) => {
@@ -28,6 +33,12 @@ export class SigninComponent {
           }
         },
       });
+    }
+    if (this.email == ''){
+        this.emptyEmail = "Email field is empty"
+    } 
+    if (this.password ==''){
+        this.emptyPassword = "Password field is empty"
     }
   }
 }

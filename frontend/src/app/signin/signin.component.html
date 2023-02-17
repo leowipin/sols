@@ -1,19 +1,31 @@
 <div class="d-flex align-items-center justify-content-center" style="height: 100vh;">
     <div class="card">
-      <div class="card-header">
+      <div class="card-header text-center">
         Sign In
       </div>
       <div class="card-body">
         <form (ngSubmit)="onSubmit()">
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" placeholder="Enter email" [(ngModel)]="email" name="email">
+            <input type="email" class="form-control" id="email" placeholder="Enter email" [(ngModel)]="email" name="email" [ngClass]="{ 'is-invalid': emptyEmail }">
+            <div *ngIf="emptyEmail" class="text-danger mt-2">{{ emptyEmail }}</div>
           </div>
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter password" [(ngModel)]="password" name="password">
+            <input type="password" class="form-control" id="password" placeholder="Enter password" [(ngModel)]="password" name="password" [ngClass]="{ 'is-invalid': emptyPassword && !emptyEmail }">
+            <div *ngIf="emptyPassword && !emptyEmail" class="text-danger mt-2">{{ emptyPassword }}</div>
           </div>
           <div *ngIf="errorMessage" class="text-danger mt-2">{{ errorMessage }}</div>
+          <div class="form-group">
+            <div class="d-flex justify-content-between">
+              <div>
+                ¿You are not registered? 
+              </div>
+              <div class="pl-1">
+                <a routerLink="/sign-up">Sign Up</a>
+              </div>
+            </div>
+          </div>
           <div class="d-flex justify-content-center mt-3">
             <button type="submit" class="btn btn-primary px-4">Sign In</button>
           </div>

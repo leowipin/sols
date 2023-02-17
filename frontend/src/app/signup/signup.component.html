@@ -1,0 +1,52 @@
+<div class="d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div class="card">
+      <div class="card-header text-center">
+        Sign Up
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" placeholder="Enter first name" [(ngModel)]="firstName" name="firstName" [ngClass]="{ 'is-invalid': emptyFirstName }">
+            <div *ngIf="emptyFirstName" class="text-danger mt-2">{{ emptyFirstName }}</div>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName" placeholder="Enter last name" [(ngModel)]="lastName" name="lastName" [ngClass]="{ 'is-invalid': emptyLastName }">
+            <div *ngIf="emptyLastName" class="text-danger mt-2">{{ emptyLastName }}</div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter email" [(ngModel)]="email" name="email" [ngClass]="{ 'is-invalid': emptyEmail }">
+            <div *ngIf="emptyEmail" class="text-danger mt-2">{{ emptyEmail }}</div>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter password" [(ngModel)]="password" name="password" [ngClass]="{ 'is-invalid': emptyPassword }">
+            <div *ngIf="emptyPassword" class="text-danger mt-2">{{ emptyPassword }}</div>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" [(ngModel)]="confirmPassword" name="confirmPassword" [ngClass]="{ 'is-invalid': emptyConfirmPassword }">
+            <div *ngIf="emptyConfirmPassword" class="text-danger mt-2">{{ emptyConfirmPassword }}</div>
+          </div>
+          <div *ngIf="!passwordsMatch" class="text-danger mt-2">{{matchErrorPassword}}</div>
+          <div *ngIf="errorMessage" class="text-danger mt-2">{{ errorMessage }}</div>
+          <div *ngIf="succesfulMessage" class="text-success mt-2">{{ succesfulMessage }}</div>
+          <div class="form-group">
+            <div class="d-flex justify-content-between">
+              <div>
+                ¿You are already registered? 
+              </div>
+              <div class="pl-1">
+                <a routerLink="/sign-in">Sign In</a>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center mt-3">
+            <button type="submit" class="btn btn-primary px-4">Sign Up</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
